@@ -23,7 +23,7 @@ The Currency Converter is a user-friendly application built with Python's Tkinte
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/eburress2/currency-converter.git
+   git clone https://github.com/yourusername/currency-converter.git
 2. Navigate to the project directory:
    ```bash
    cd currency-converter
