@@ -1,34 +1,40 @@
 import tkinter as tk
 from tkinter import messagebox
-from PIL import Image, ImageTk, UnidentifiedImageError  # For image handling
+from PIL import Image, ImageTk  # For image handling
 
 # Sample currency rates (base currency is USD)
 CURRENCY_RATES = {
-    "USD": (1.0, "$"),
-    "EUR": (0.85, "€"),
-    "JPY": (110.0, "¥"),
-    "GBP": (0.75, "£"),
-    "AUD": (1.35, "A$"),
+    "USD": (1.0, "$"),  # 1 USD to USD
+    "EUR": (0.85, "€"),  # 1 USD to EUR
+    "JPY": (110.0, "¥"),  # 1 USD to JPY
+    "GBP": (0.75, "£"),  # 1 USD to GBP
+    "AUD": (1.35, "A$"),  # 1 USD to AUD
 }
 
 def validate_input(entry_value):
-    """ Validates user input to ensure it is a non-negative number. """
-    if not entry_value:
+    """ 
+    Validates user input to ensure it is a non-negative number. 
+    Returns True if valid, False otherwise.
+    """
+    if not entry_value:  # Check if entry is empty
         return False
     try:
-        value = float(entry_value)
+        value = float(entry_value)  # Attempt to convert to float
         return value >= 0  # Ensure non-negative
     except ValueError:
-        return False
+        return False  # Return False if conversion fails
 
 def convert_currency():
-    """ Converts currency based on user input and selected options. """
+    """ 
+    Converts currency based on user input and selected options. 
+    Updates the result label with the conversion details.
+    """
     amount = amount_entry.get()  # Get amount from entry
     from_currency = from_currency_var.get()  # Get selected from currency
     to_currency = to_currency_var.get()  # Get selected to currency
 
     # Validate input
-    if not validate_input(amount):
+    if not validate_input(amount):  # Check for valid input
         messagebox.showerror("Input Error", "Please enter a valid non-negative number.")
         return
 
@@ -38,11 +44,14 @@ def convert_currency():
     converted_amount = amount * (to_rate / from_rate)  # Calculate conversion
 
     # Update result label with conversion details
-    result_label.config(text=f"The Converted Amount is : {converted_amount:.2f} {to_symbol} ({from_symbol}{amount:.2f} {from_currency} at a rate of {to_rate/from_rate:.2f})")  # Update result label
+    result_label.config(text=f"Converted Amount: {converted_amount:.2f} {to_symbol} ({from_symbol}{amount:.2f} {from_currency} at rate {to_rate/from_rate:.2f})")  # Update result label
 
 def open_conversion_window():
-    """ Opens the currency conversion window. """
-    conversion_window = tk.Toplevel(root)
+    """ 
+    Opens the currency conversion window.
+    Creates the layout for the conversion interface.
+    """
+    conversion_window = tk.Toplevel(root)  # Create new window
     conversion_window.title("Currency Converter")
 
     global amount_entry, from_currency_var, to_currency_var, result_label  # Make variables global for access
@@ -102,4 +111,4 @@ except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
 # Start the main loop
-root.mainloop()
+root.mainloop()  # Run the application
