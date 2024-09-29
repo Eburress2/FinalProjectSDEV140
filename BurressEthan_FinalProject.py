@@ -1,0 +1,105 @@
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk, UnidentifiedImageError  # For image handling
+
+# Sample currency rates (base currency is USD)
+CURRENCY_RATES = {
+    "USD": (1.0, "$"),
+    "EUR": (0.85, "€"),
+    "JPY": (110.0, "¥"),
+    "GBP": (0.75, "£"),
+    "AUD": (1.35, "A$"),
+}
+
+def validate_input(entry_value):
+    """ Validates user input to ensure it is a non-negative number. """
+    if not entry_value:
+        return False
+    try:
+        value = float(entry_value)
+        return value >= 0  # Ensure non-negative
+    except ValueError:
+        return False
+
+def convert_currency():
+    """ Converts currency based on user input and selected options. """
+    amount = amount_entry.get()  # Get amount from entry
+    from_currency = from_currency_var.get()  # Get selected from currency
+    to_currency = to_currency_var.get()  # Get selected to currency
+
+    # Validate input
+    if not validate_input(amount):
+        messagebox.showerror("Input Error", "Please enter a valid non-negative number.")
+        return
+
+    amount = float(amount)  # Convert amount to float
+    from_rate, from_symbol = CURRENCY_RATES[from_currency]  # Get from currency rate and symbol
+    to_rate, to_symbol = CURRENCY_RATES[to_currency]  # Get to currency rate and symbol
+    converted_amount = amount * (to_rate / from_rate)  # Calculate conversion
+
+    # Update result label with conversion details
+    result_label.config(text=f"The Converted Amount is : {converted_amount:.2f} {to_symbol} ({from_symbol}{amount:.2f} {from_currency} at a rate of {to_rate/from_rate:.2f})")  # Update result label
+
+def open_conversion_window():
+    """ Opens the currency conversion window. """
+    conversion_window = tk.Toplevel(root)
+    conversion_window.title("Currency Converter")
+
+    global amount_entry, from_currency_var, to_currency_var, result_label  # Make variables global for access
+
+    tk.Label(conversion_window, text="Enter Amount:").pack()  # Label for amount
+    amount_entry = tk.Entry(conversion_window)  # Entry for amount
+    amount_entry.pack()
+
+    tk.Label(conversion_window, text="From Currency:").pack()  # Label for from currency
+    from_currency_var = tk.StringVar(value="USD")  # Default value
+    from_currency_menu = tk.OptionMenu(conversion_window, from_currency_var, *CURRENCY_RATES.keys())  # Dropdown for from currency
+    from_currency_menu.pack()
+
+    tk.Label(conversion_window, text="To Currency:").pack()  # Label for to currency
+    to_currency_var = tk.StringVar(value="EUR")  # Default value
+    to_currency_menu = tk.OptionMenu(conversion_window, to_currency_var, *CURRENCY_RATES.keys())  # Dropdown for to currency
+    to_currency_menu.pack()
+
+    convert_button = tk.Button(conversion_window, text="Convert", command=convert_currency)  # Convert button
+    convert_button.pack()
+
+    result_label = tk.Label(conversion_window, text="Converted Amount: ")  # Label for displaying result
+    result_label.pack()
+
+    exit_button = tk.Button(conversion_window, text="Exit", command=conversion_window.destroy)  # Exit button
+    exit_button.pack()
+
+def exit_application():
+    """ Exits the application. """
+    root.destroy()  # Close the main application window
+
+# Main application setup
+root = tk.Tk()
+root.title("Currency Converter")
+
+# Load a single image
+try:
+    image = Image.open("F:/Python Projects/School Work/currency_image.jpg")  # Use one valid image path
+    image = image.resize((100, 100))  # Resize image
+    photo = ImageTk.PhotoImage(image)  # Create PhotoImage object
+
+    # User Interface Elements
+    tk.Label(root, text="Welcome to the Currency Converter", font=("Helvetica", 16)).pack()  # Welcome label
+    tk.Label(root, image=photo).pack()  # Image without caption
+
+    open_converter_button = tk.Button(root, text="Open Converter", command=open_conversion_window)  # Button to open converter
+    open_converter_button.pack()
+
+    exit_button = tk.Button(root, text="Exit", command=exit_application)  # Button to exit application
+    exit_button.pack()
+
+except FileNotFoundError:
+    print("Error: The specified image file was not found.")
+except UnidentifiedImageError:
+    print("Error: Cannot identify the image file. It may be corrupted or in an unsupported format.")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+
+# Start the main loop
+root.mainloop()
